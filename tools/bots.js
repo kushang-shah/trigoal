@@ -1,7 +1,7 @@
 // Dev helper: joins a room with bot players that chase the ball.
 // Usage: node tools/bots.js ROOMCODE [count] [url]
 const { io } = require('socket.io-client');
-const [code, count = '2', url = 'http://localhost:3000'] = process.argv.slice(2);
+const [code, count = '1', url = 'http://localhost:3000'] = process.argv.slice(2);
 if (!code) { console.log('Usage: node tools/bots.js ROOMCODE [count] [url]'); process.exit(1); }
 
 for (let i = 0; i < Number(count); i++) {

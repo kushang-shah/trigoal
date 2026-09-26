@@ -1,6 +1,6 @@
 'use strict';
 
-// World is 1000x1000 with a circular arena. Three goals sit 120° apart on the wall.
+// World is 1000x1000 with a circular arena. Two goals face each other on the left and right of the wall.
 const C = {
   CX: 500, CY: 500, R: 440,
   GOAL_HALF: 0.3, // half-width of each goal mouth, in radians
@@ -14,7 +14,8 @@ const C = {
   BOOST_DRAIN: 38, BOOST_REGEN: 16,
   COUNTDOWN: 3, GOAL_PAUSE: 2.6, WIN_SCORE: 5,
 };
-const GOAL_ANGLES = [-Math.PI / 2, Math.PI / 6, (5 * Math.PI) / 6];
+const GOAL_ANGLES = [Math.PI, 0];
+const N = GOAL_ANGLES.length;
 
 const wrap = (a) => {
   while (a > Math.PI) a -= 2 * Math.PI;
@@ -71,7 +72,7 @@ function post(o, r, px, py, e) {
 class Game {
   constructor(emit) {
     this.emit = emit;
-    this.players = [null, null, null];
+    this.players = Array(N).fill(null);
     this.ball = { x: C.CX, y: C.CY, vx: 0, vy: 0 };
     this.phase = 'lobby'; // lobby | countdown | playing | goal | over
     this.timer = 0;
@@ -132,7 +133,7 @@ class Game {
   }
 
   goalAt(angle) {
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       if (this.players[s] && Math.abs(wrap(angle - GOAL_ANGLES[s])) < C.GOAL_HALF) return s;
     }
     return -1;
@@ -203,7 +204,7 @@ class Game {
     }
 
     const posts = [];
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       if (!this.players[s]) continue;
       for (const sign of [-1, 1]) {
         const a = GOAL_ANGLES[s] + sign * C.GOAL_HALF;
@@ -284,4 +285,4 @@ class Game {
   }
 }
 
-module.exports = { Game, C };
+module.exports = { Game, C, N };

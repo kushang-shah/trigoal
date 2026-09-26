@@ -3,8 +3,9 @@
 
   // Must match game.js
   const C = { CX: 500, CY: 500, R: 440, GOAL_HALF: 0.3, POST_R: 9, CAR_R: 21, BALL_R: 17, WIN: 5 };
-  const GOAL_ANGLES = [-Math.PI / 2, Math.PI / 6, (5 * Math.PI) / 6];
-  const COLORS = ['#ff4d6d', '#3fa9ff', '#ffc93c'];
+  const GOAL_ANGLES = [Math.PI, 0];
+  const N = GOAL_ANGLES.length;
+  const COLORS = ['#ff4d6d', '#3fa9ff'];
   const INTERP = 80; // ms of render delay for smooth interpolation
 
   const $ = (s) => document.querySelector(s);
@@ -74,7 +75,7 @@
     $('#roomCode').textContent = lobby.code;
     const list = $('#players');
     list.innerHTML = '';
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       const p = lobby.players[s];
       const li = document.createElement('li');
       li.className = 'slot' + (p ? ' filled' : '');
@@ -91,9 +92,9 @@
     const isHost = lobby.host === socket.id;
     const btn = $('#startBtn');
     btn.hidden = !isHost;
-    btn.disabled = count < 2;
-    btn.textContent = count < 2 ? 'Need at least 2 players' : count < 3 ? 'Start with 2 players' : 'Start match!';
-    $('#waitMsg').textContent = isHost ? (count < 3 ? 'Share the code, up to 3 players' : '') : 'Waiting for host to start…';
+    btn.disabled = count < N;
+    btn.textContent = count < N ? 'Waiting for opponent…' : 'Start match!';
+    $('#waitMsg').textContent = isHost ? (count < N ? 'Share the code with your opponent' : '') : 'Waiting for host to start…';
   }
 
   function pill(text) {
@@ -305,7 +306,7 @@
   });
 
   socket.on('goal', ({ conceder, scorer, own }) => {
-    const names = lobby ? lobby.players.map((p) => (p ? p.name : '?')) : ['Red', 'Blue', 'Yellow'];
+    const names = lobby ? lobby.players.map((p) => (p ? p.name : '?')) : ['Red', 'Blue'];
     const color = scorer >= 0 ? COLORS[scorer] : '#ffffff';
     const banner = $('#banner');
     banner.style.setProperty('--c', color);
@@ -347,7 +348,7 @@
   window.addEventListener('resize', resize);
 
   function activeSlots() {
-    return lobby ? lobby.players.map((p) => !!p) : [true, true, true];
+    return lobby ? lobby.players.map((p) => !!p) : GOAL_ANGLES.map(() => true);
   }
 
   function buildPitch() {
@@ -363,7 +364,7 @@
     const { CX, CY, R, GOAL_HALF: H2 } = C;
 
     // Goal nets behind the wall
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       if (!act[s]) continue;
       const a = GOAL_ANGLES[s];
       g.save();
@@ -410,12 +411,12 @@
     for (let x = CX - R; x < CX + R; x += 110) g.fillRect(x, 0, 55, 1000);
 
     // Each player's third, tinted in their color
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       if (!act[s]) continue;
       const a = GOAL_ANGLES[s];
       g.beginPath();
       g.moveTo(CX, CY);
-      g.arc(CX, CY, R, a - Math.PI / 3, a + Math.PI / 3);
+      g.arc(CX, CY, R, a - Math.PI / N, a + Math.PI / N);
       g.closePath();
       const tg = g.createRadialGradient(CX, CY, 0, CX, CY, R);
       tg.addColorStop(0, hexA(COLORS[s], 0));
@@ -429,7 +430,7 @@
     // Sector dividers
     g.setLineDash([14, 12]);
     for (const a of GOAL_ANGLES) {
-      const d = a + Math.PI / 3;
+      const d = a + Math.PI / N;
       g.beginPath();
       g.moveTo(CX + Math.cos(d) * 90, CY + Math.sin(d) * 90);
       g.lineTo(CX + Math.cos(d) * R, CY + Math.sin(d) * R);
@@ -440,7 +441,7 @@
     g.beginPath(); g.arc(CX, CY, 90, 0, Math.PI * 2); g.stroke();
     g.beginPath(); g.arc(CX, CY, 6, 0, Math.PI * 2); g.fillStyle = 'rgba(255,255,255,0.7)'; g.fill();
     // Goal boxes
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       const a = GOAL_ANGLES[s];
       g.beginPath();
       g.arc(CX + Math.cos(a) * R, CY + Math.sin(a) * R, 135, 0, Math.PI * 2);
@@ -456,7 +457,7 @@
 
     // Wall, with gaps where goals are
     const gaps = [];
-    for (let s = 0; s < 3; s++) if (act[s]) gaps.push(GOAL_ANGLES[s]);
+    for (let s = 0; s < N; s++) if (act[s]) gaps.push(GOAL_ANGLES[s]);
     gaps.sort((x, y) => x - y);
     g.lineWidth = 14;
     g.lineCap = 'round';
@@ -475,7 +476,7 @@
     g.shadowBlur = 0;
 
     // Posts
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       if (!act[s]) continue;
       for (const sign of [-1, 1]) {
         const a = GOAL_ANGLES[s] + sign * H2;
@@ -598,7 +599,7 @@
     hudKey = key;
     const hud = $('#hud');
     hud.innerHTML = '';
-    for (let s = 0; s < 3; s++) {
+    for (let s = 0; s < N; s++) {
       const p = lobby.players[s];
       const chip = document.createElement('div');
       chip.className = 'chip' + (p ? '' : ' empty') + (s === mySlot ? ' me' : '');
@@ -617,14 +618,14 @@
   function showOver() {
     const scores = latest.s;
     let best = -1;
-    for (let s = 0; s < 3; s++) if (scores[s] !== null && (best < 0 || scores[s] > scores[best])) best = s;
+    for (let s = 0; s < N; s++) if (scores[s] !== null && (best < 0 || scores[s] > scores[best])) best = s;
     const names = lobby.players.map((p) => (p ? p.name : '—'));
     const wt = $('#winnerText');
     wt.textContent = best === mySlot ? 'You win! 🏆' : `${names[best]} wins! 🏆`;
     wt.style.color = COLORS[best];
     const list = $('#finalScores');
     list.innerHTML = '';
-    [0, 1, 2].filter((s) => lobby.players[s]).sort((a, b) => scores[b] - scores[a]).forEach((s) => {
+    GOAL_ANGLES.map((_, i) => i).filter((s) => lobby.players[s]).sort((a, b) => scores[b] - scores[a]).forEach((s) => {
       const li = document.createElement('li');
       li.className = 'slot filled';
       li.style.setProperty('--c', COLORS[s]);

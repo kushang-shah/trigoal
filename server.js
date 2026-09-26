@@ -4,11 +4,11 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const { Server } = require('socket.io');
-const { Game } = require('./game');
+const { Game, N } = require('./game');
 
 const PORT = process.env.PORT || 3000;
 const TICK = 1 / 60;
-const MAX_PLAYERS = 3;
+const MAX_PLAYERS = N;
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
@@ -74,7 +74,7 @@ function leaveRoom(socket) {
 }
 
 function joinRoom(socket, room, name) {
-  if (room.game.count() >= MAX_PLAYERS) return 'Room is full (3/3 players)';
+  if (room.game.count() >= MAX_PLAYERS) return `Room is full (${MAX_PLAYERS}/${MAX_PLAYERS} players)`;
   if (!['lobby', 'over'].includes(room.game.phase)) return 'A match is in progress, try again soon';
   room.game.addPlayer(socket.id, cleanName(name));
   if (!room.host) room.host = socket.id;
