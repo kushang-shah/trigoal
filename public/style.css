@@ -37,7 +37,7 @@ html, body {
 
 .logo {
   font-family: 'Russo One', sans-serif; font-weight: 400;
-  font-size: 56px; margin: 0; text-align: center; letter-spacing: 2px;
+  font-size: 48px; margin: 0; text-align: center; letter-spacing: 1px; white-space: nowrap;
   background: linear-gradient(90deg, #ff4d6d, #ffc93c 50%, #3fa9ff);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   filter: drop-shadow(0 4px 18px rgba(255, 180, 60, 0.3));
@@ -189,5 +189,5 @@ body.touch #boost { bottom: auto; top: 58px; }
   .chip { padding: 4px 8px 4px 6px; font-size: 12px; }
   .chip .n { max-width: 56px; }
   .chip .s { font-size: 16px; }
-  .logo { font-size: 46px; }
+  .logo { font-size: 38px; }
 }

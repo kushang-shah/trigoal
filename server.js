@@ -143,4 +143,4 @@ setInterval(() => {
   }
 }, 1000 / 60);
 
-server.listen(PORT, () => console.log(`TriGoal running on http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Turbo Goal running on http://localhost:${PORT}`));

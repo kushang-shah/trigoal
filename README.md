@@ -1,4 +1,4 @@
-# TriGoal
+# Turbo Goal
 
 2-player (1v1) top-down car soccer in the browser. Node.js + Express + Socket.IO backend, plain HTML/CSS/JS canvas frontend.
 

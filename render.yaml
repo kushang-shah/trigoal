@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: trigoal
+    name: turbo-goal
     runtime: node
     plan: free
     buildCommand: npm install

@@ -28,13 +28,13 @@
   const nameInput = $('#name');
   const codeInput = $('#code');
   const homeErr = $('#homeErr');
-  nameInput.value = store.get('trigoal.name') || '';
+  nameInput.value = store.get('turbogoal.name') || '';
   const roomParam = new URLSearchParams(location.search).get('room');
   if (roomParam) codeInput.value = roomParam.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
 
   function myName() {
     const n = nameInput.value.trim().slice(0, 12) || 'Player';
-    store.set('trigoal.name', n);
+    store.set('turbogoal.name', n);
     return n;
   }
 
@@ -165,7 +165,7 @@
 
   // ---------------------------------------------------------------- audio
   let actx = null, master = null, engOsc = null, engGain = null, engFilter = null;
-  let muted = store.get('trigoal.muted') === '1';
+  let muted = store.get('turbogoal.muted') === '1';
   $('#muteBtn').textContent = muted ? '🔇' : '🔊';
   $('#muteBtn').onclick = toggleMute;
 
@@ -189,7 +189,7 @@
   }
   function toggleMute() {
     muted = !muted;
-    store.set('trigoal.muted', muted ? '1' : '0');
+    store.set('turbogoal.muted', muted ? '1' : '0');
     $('#muteBtn').textContent = muted ? '🔇' : '🔊';
     if (master) master.gain.value = muted ? 0 : 0.5;
   }

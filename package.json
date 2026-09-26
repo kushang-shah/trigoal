@@ -1,5 +1,5 @@
 {
-  "name": "trigoal",
+  "name": "turbo-goal",
   "version": "1.0.0",
   "description": "3-player top-down car soccer. Node.js + Socket.IO + canvas.",
   "main": "server.js",
