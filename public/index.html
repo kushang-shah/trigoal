@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>TriGoal</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Home -->
+  <section id="home" class="screen active">
+    <div class="card">
+      <h1 class="logo">TRI<span>GOAL</span></h1>
+      <p class="tag">3-player car soccer. Defend your goal, score in theirs.</p>
+
+      <label class="field">
+        <span>Your name</span>
+        <input id="name" maxlength="12" placeholder="Speedy" autocomplete="off" />
+      </label>
+
+      <button id="createBtn" class="btn primary">Create room</button>
+
+      <div class="divider"><span>or join a friend</span></div>
+
+      <div class="join-row">
+        <input id="code" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" />
+        <button id="joinBtn" class="btn">Join</button>
+      </div>
+      <p id="homeErr" class="err"></p>
+
+      <div class="help">
+        <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to drive</div>
+        <div><kbd>Space</kbd> or <kbd>Shift</kbd> to boost</div>
+        <div>First to <b>5</b> goals wins</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lobby -->
+  <section id="lobby" class="screen">
+    <div class="card">
+      <p class="label">Room code</p>
+      <div class="code-row">
+        <div id="roomCode" class="room-code">----</div>
+        <button id="copyBtn" class="btn small">Copy link</button>
+      </div>
+      <ul id="players" class="players"></ul>
+      <button id="startBtn" class="btn primary" hidden>Start match!</button>
+      <p id="waitMsg" class="wait"></p>
+      <button id="leaveBtn" class="btn ghost">Leave room</button>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="screen">
+    <canvas id="c"></canvas>
+    <div id="hud"></div>
+    <div id="boost"><span>BOOST</span><div class="bar"><i id="boostFill"></i></div></div>
+    <button id="muteBtn" class="icon-btn" title="Mute (M)">🔊</button>
+    <div id="banner"><div class="big"></div><div class="sub"></div></div>
+
+    <div id="overlay" hidden>
+      <div class="card">
+        <p class="label">Match over</p>
+        <h2 id="winnerText"></h2>
+        <ul id="finalScores" class="players"></ul>
+        <button id="againBtn" class="btn primary">Play again</button>
+        <p id="againWait" class="wait">Waiting for host…</p>
+        <button id="overLeaveBtn" class="btn ghost">Leave room</button>
+      </div>
+    </div>
+
+    <div id="touch">
+      <div class="pad left">
+        <button data-k="l">◀</button>
+        <button data-k="r">▶</button>
+      </div>
+      <div class="pad right">
+        <button data-k="b" class="boost-btn">⚡</button>
+        <div class="col">
+          <button data-k="u">▲</button>
+          <button data-k="d">▼</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>

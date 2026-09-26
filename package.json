@@ -1,0 +1,21 @@
+{
+  "name": "trigoal",
+  "version": "1.0.0",
+  "description": "3-player top-down car soccer. Node.js + Socket.IO + canvas.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
+}
